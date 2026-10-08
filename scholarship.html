@@ -1,0 +1,1401 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cổng Thông Tin Học Bổng Sinh Viên - Student Scholarship Portal</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: {
+                            50: '#f0f5fa',
+                            100: '#e1ebf5',
+                            800: '#0f2942',
+                            900: '#0a192f',
+                            950: '#060f1e'
+                        },
+                        teal: {
+                            500: '#00b4d8',
+                            600: '#0096c7',
+                            700: '#03045e'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #00b4d8;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0096c7;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+        .gradient-header {
+            background: linear-gradient(135deg, #0a192f 0%, #0f2942 50%, #0077b6 100%);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 font-sans text-slate-800 antialiased min-h-screen flex flex-col justify-between">
+
+    <!-- Navigation Header -->
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm transition-all duration-300" id="mainHeader">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Logo & Brand -->
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('scholarships')">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-tr from-navy-900 to-teal-500 flex items-center justify-center text-white shadow-lg shadow-teal-500/20">
+                        <i class="fa-solid fa-graduation-cap text-2xl"></i>
+                    </div>
+                    <div>
+                        <span class="text-xl font-extrabold text-navy-900 tracking-tight block">EduScholar</span>
+                        <span class="text-xs font-semibold text-teal-600 tracking-wider uppercase block">Cổng Học Bổng Sinh Viên</span>
+                    </div>
+                </div>
+
+                <!-- Desktop Navigation Menu -->
+                <nav class="hidden md:flex space-x-1 lg:space-x-2">
+                    <button onclick="switchTab('scholarships')" id="nav-scholarships" class="nav-btn px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 text-teal-600 bg-teal-50">
+                        <i class="fa-solid fa-award mr-1.5"></i> Danh sách Học bổng
+                    </button>
+                    <button onclick="switchTab('guide')" id="nav-guide" class="nav-btn px-4 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:text-navy-900 hover:bg-slate-100 transition-all duration-200">
+                        <i class="fa-solid fa-file-signature mr-1.5"></i> QTrình & Hồ sơ
+                    </button>
+                    <button onclick="switchTab('tracking')" id="nav-tracking" class="nav-btn px-4 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:text-navy-900 hover:bg-slate-100 transition-all duration-200">
+                        <i class="fa-solid fa-magnifying-glass-chart mr-1.5"></i> Tra cứu Kết quả
+                    </button>
+                    <button onclick="switchTab('faq')" id="nav-faq" class="nav-btn px-4 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:text-navy-900 hover:bg-slate-100 transition-all duration-200">
+                        <i class="fa-solid fa-circle-question mr-1.5"></i> Hỏi đáp FAQ
+                    </button>
+                    <button onclick="switchTab('contact')" id="nav-contact" class="nav-btn px-4 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:text-navy-900 hover:bg-slate-100 transition-all duration-200">
+                        <i class="fa-solid fa-headset mr-1.5"></i> Liên hệ CTSV
+                    </button>
+                </nav>
+
+                <!-- Auth & Action -->
+                <div class="hidden sm:flex items-center space-x-3">
+                    <button onclick="openLoginModal()" class="px-5 py-2.5 rounded-xl border-2 border-navy-900 text-navy-900 font-bold hover:bg-navy-900 hover:text-white transition-all duration-200 text-sm shadow-sm flex items-center gap-2">
+                        <i class="fa-regular fa-user"></i> Đăng nhập MSSV
+                    </button>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button onclick="toggleMobileMenu()" class="md:hidden p-2 rounded-lg text-slate-600 hover:text-navy-900 hover:bg-slate-100">
+                    <i class="fa-solid fa-bars text-xl" id="menuIcon"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobileMenu" class="hidden md:hidden border-t border-slate-200 bg-white px-4 pt-2 pb-4 space-y-1 shadow-lg">
+            <button onclick="switchTab('scholarships'); toggleMobileMenu()" class="w-full text-left px-4 py-2.5 rounded-lg font-medium text-slate-700 hover:bg-teal-50 hover:text-teal-600">
+                <i class="fa-solid fa-award w-6"></i> Danh sách Học bổng
+            </button>
+            <button onclick="switchTab('guide'); toggleMobileMenu()" class="w-full text-left px-4 py-2.5 rounded-lg font-medium text-slate-700 hover:bg-teal-50 hover:text-teal-600">
+                <i class="fa-solid fa-file-signature w-6"></i> QTrình & Hồ sơ
+            </button>
+            <button onclick="switchTab('tracking'); toggleMobileMenu()" class="w-full text-left px-4 py-2.5 rounded-lg font-medium text-slate-700 hover:bg-teal-50 hover:text-teal-600">
+                <i class="fa-solid fa-magnifying-glass-chart w-6"></i> Tra cứu Kết quả
+            </button>
+            <button onclick="switchTab('faq'); toggleMobileMenu()" class="w-full text-left px-4 py-2.5 rounded-lg font-medium text-slate-700 hover:bg-teal-50 hover:text-teal-600">
+                <i class="fa-solid fa-circle-question w-6"></i> Hỏi đáp FAQ
+            </button>
+            <button onclick="switchTab('contact'); toggleMobileMenu()" class="w-full text-left px-4 py-2.5 rounded-lg font-medium text-slate-700 hover:bg-teal-50 hover:text-teal-600">
+                <i class="fa-solid fa-headset w-6"></i> Liên hệ CTSV
+            </button>
+            <div class="pt-2">
+                <button onclick="openLoginModal(); toggleMobileMenu()" class="w-full py-2.5 rounded-xl bg-navy-900 text-white font-semibold text-center block">
+                    Đăng nhập MSSV
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Banner -->
+    <section class="gradient-header text-white relative overflow-hidden py-12 lg:py-16">
+        <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid lg:grid-cols-12 gap-8 items-center">
+                <div class="lg:col-span-8 text-center lg:text-left">
+                    <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-teal-500/20 text-teal-300 border border-teal-500/30 mb-4">
+                        <i class="fa-solid fa-bullhorn text-teal-400"></i> Đang mở cổng đăng ký Học kỳ 1 (2026 - 2027)
+                    </span>
+                    <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-tight mb-4">
+                        Tìm Kếm & Chinh Phục <br class="hidden sm:inline"><span class="text-transparent bg-clip-text bg-gradient-to-r from-teal-300 to-sky-200">Cơ Hội Học Bổng Tốt Nhất</span>
+                    </h1>
+                    <p class="text-slate-300 text-base sm:text-lg max-w-2xl mb-6">
+                        Hệ thống tra cứu, nộp hồ sơ và quản lý học bổng tập trung. Cam kết minh bạch, nhanh chóng và hỗ trợ tối đa cho sinh viên toàn trường.
+                    </p>
+                    <div class="flex flex-wrap gap-4 justify-center lg:justify-start text-sm">
+                        <div class="flex items-center gap-2 bg-white/10 backdrop-blur px-4 py-2 rounded-lg border border-white/10">
+                            <i class="fa-solid fa-sack-dollar text-yellow-400 text-lg"></i>
+                            <div>
+                                <div class="font-bold text-base">15+ Tỷ VNĐ</div>
+                                <div class="text-xs text-slate-300">Tổng ngân sách năm</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 bg-white/10 backdrop-blur px-4 py-2 rounded-lg border border-white/10">
+                            <i class="fa-solid fa-user-graduate text-teal-300 text-lg"></i>
+                            <div>
+                                <div class="font-bold text-base">2,500+</div>
+                                <div class="text-xs text-slate-300">Suất học bổng/năm</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 bg-white/10 backdrop-blur px-4 py-2 rounded-lg border border-white/10">
+                            <i class="fa-solid fa-building-columns text-sky-300 text-lg"></i>
+                            <div>
+                                <div class="font-bold text-base">40+ Doanh nghiệp</div>
+                                <div class="text-xs text-slate-300">Đối tác tài trợ</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="lg:col-span-4 hidden lg:block">
+                    <div class="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/20 shadow-2xl relative">
+                        <div class="text-center pb-4 border-b border-white/10">
+                            <p class="text-xs font-semibold text-teal-300 uppercase tracking-widest">Thông báo quan trọng</p>
+                            <h3 class="font-bold text-lg mt-1">Hạn nộp HB KKHT HK1</h3>
+                        </div>
+                        <div class="py-6 text-center">
+                            <div class="inline-flex gap-3 text-center" id="heroCountdown">
+                                <div class="bg-navy-900/80 px-3 py-2 rounded-lg min-w-[60px]">
+                                    <span class="block text-2xl font-bold text-teal-400" id="cd-days">12</span>
+                                    <span class="text-[10px] text-slate-300 uppercase">Ngày</span>
+                                </div>
+                                <div class="bg-navy-900/80 px-3 py-2 rounded-lg min-w-[60px]">
+                                    <span class="block text-2xl font-bold text-teal-400" id="cd-hours">08</span>
+                                    <span class="text-[10px] text-slate-300 uppercase">Giờ</span>
+                                </div>
+                                <div class="bg-navy-900/80 px-3 py-2 rounded-lg min-w-[60px]">
+                                    <span class="block text-2xl font-bold text-teal-400" id="cd-mins">45</span>
+                                    <span class="text-[10px] text-slate-300 uppercase">Phút</span>
+                                </div>
+                                <div class="bg-navy-900/80 px-3 py-2 rounded-lg min-w-[60px]">
+                                    <span class="block text-2xl font-bold text-teal-400" id="cd-secs">30</span>
+                                    <span class="text-[10px] text-slate-300 uppercase">Giây</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button onclick="switchTab('scholarships')" class="w-full py-3 bg-teal-500 hover:bg-teal-600 text-white font-bold rounded-xl transition shadow-lg text-sm flex items-center justify-center gap-2">
+                            <span>Ứng tuyển ngay</span> <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-grow w-full">
+
+        <!-- TAB 1: DANH SÁCH HỌC BỔNG & TÌM KIẾM -->
+        <section id="tab-scholarships" class="tab-content block space-y-8">
+            <!-- Search & Multi-Filter Bar -->
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-md">
+                <div class="flex flex-col gap-4">
+                    <!-- Top Row: Search Input -->
+                    <div class="relative">
+                        <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg"></i>
+                        <input type="text" id="searchInput" oninput="filterScholarships()" placeholder="Nhập tên học bổng, tên doanh nghiệp hoặc từ khóa..." class="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white transition text-sm sm:text-base">
+                    </div>
+
+                    <!-- Bottom Row: Filter Dropdowns -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-2">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Loại Học Bổng</label>
+                            <select id="filterCategory" onchange="filterScholarships()" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm text-slate-700 focus:ring-2 focus:ring-teal-500 focus:outline-none">
+                                <option value="all">Tất cả loại học bổng</option>
+                                <option value="kkht">Khuyến khích học tập</option>
+                                <option value="enterprise">Doanh nghiệp & Đối tác</option>
+                                <option value="support">Hỗ trợ / Hoàn cảnh khó khăn</option>
+                                <option value="exchange">Trao đổi / Du học</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Ngành Học</label>
+                            <select id="filterMajor" onchange="filterScholarships()" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm text-slate-700 focus:ring-2 focus:ring-teal-500 focus:outline-none">
+                                <option value="all">Tất cả ngành học</option>
+                                <option value="cntt">Công nghệ thông tin / Điện tử</option>
+                                <option value="kinhte">Kinh tế / Quản trị / Kế toán</option>
+                                <option value="ngoainyu">Ngoại ngữ / Xã hội</option>
+                                <option value="kythuat">Kỹ thuật / Cơ khí</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Giá Trị Suất</label>
+                            <select id="filterValue" onchange="filterScholarships()" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm text-slate-700 focus:ring-2 focus:ring-teal-500 focus:outline-none">
+                                <option value="all">Tất cả mức giá trị</option>
+                                <option value="high">> 10 triệu VNĐ</option>
+                                <option value="medium">5 - 10 triệu VNĐ</option>
+                                <option value="low">< 5 triệu VNĐ</option>
+                            </select>
+                        </div>
+                        <div class="flex items-end">
+                            <button onclick="resetFilters()" class="w-full py-2.5 px-4 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold rounded-lg text-sm transition flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-rotate-left"></i> Đặt lại bộ lọc
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Header Title & Results Count -->
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                <div>
+                    <h2 class="text-2xl font-bold text-navy-900">Danh Sách Học Bổng Đang Mở</h2>
+                    <p class="text-sm text-slate-500">Tìm thấy <span id="scholarshipCount" class="font-bold text-teal-600">0</span> chương trình phù hợp</p>
+                </div>
+            </div>
+
+            <!-- Scholarship Cards Grid -->
+            <div id="scholarshipsGrid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Dynamic Content Rendered by JS -->
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyScholarship" class="hidden text-center py-16 bg-white rounded-2xl border border-slate-200 p-8">
+                <i class="fa-solid fa-folder-open text-5xl text-slate-300 mb-4"></i>
+                <h3 class="text-lg font-bold text-slate-700">Không tìm thấy học bổng phù hợp</h3>
+                <p class="text-sm text-slate-500 mt-1">Vui lòng thử thay đổi từ khóa hoặc bộ lọc tìm kiếm của bạn.</p>
+                <button onclick="resetFilters()" class="mt-4 px-4 py-2 bg-teal-500 text-white font-semibold rounded-lg text-sm hover:bg-teal-600 transition">
+                    Xóa tất cả bộ lọc
+                </button>
+            </div>
+        </section>
+
+        <!-- TAB 2: QUY TRÌNH & HƯỚNG DẪN LÀM HỒ SƠ -->
+        <section id="tab-guide" class="tab-content hidden space-y-12">
+            <!-- 4 Step Overview -->
+            <div>
+                <div class="text-center max-w-3xl mx-auto mb-10">
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-navy-900">Quy Trình 4 Bước Đăng Ký Học Bổng</h2>
+                    <p class="text-slate-600 mt-2 text-sm sm:text-base">Hướng dẫn chi tiết giúp sinh viên hoàn thiện hồ sơ ứng tuyển học bổng đúng quy định và nâng cao khả năng trúng tuyển.</p>
+                </div>
+
+                <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden group hover:border-teal-500 transition">
+                        <div class="text-3xl font-black text-slate-100 group-hover:text-teal-500/20 absolute right-4 top-2 transition">01</div>
+                        <div class="w-12 h-12 rounded-xl bg-teal-100 text-teal-600 flex items-center justify-center font-bold text-xl mb-4">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </div>
+                        <h3 class="font-bold text-navy-900 text-lg mb-2">1. Tìm Hiểu Đợt Học Bổng</h3>
+                        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">Tra cứu danh sách học bổng, đối chiếu điều kiện GPA, điểm rèn luyện và tiêu chí riêng của từng quỹ.</p>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden group hover:border-teal-500 transition">
+                        <div class="text-3xl font-black text-slate-100 group-hover:text-teal-500/20 absolute right-4 top-2 transition">02</div>
+                        <div class="w-12 h-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xl mb-4">
+                            <i class="fa-solid fa-file-shield"></i>
+                        </div>
+                        <h3 class="font-bold text-navy-900 text-lg mb-2">2. Chuẩn Bị Hồ Sơ</h3>
+                        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">Thu thập và hoàn thiện đầy đủ giấy tờ theo Checklist bắt buộc (bảng điểm, bài luận, chứng nhận...).</p>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden group hover:border-teal-500 transition">
+                        <div class="text-3xl font-black text-slate-100 group-hover:text-teal-500/20 absolute right-4 top-2 transition">03</div>
+                        <div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center font-bold text-xl mb-4">
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                        </div>
+                        <h3 class="font-bold text-navy-900 text-lg mb-2">3. Nộp Đơn Trực Tuyến</h3>
+                        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">Đăng nhập tài khoản MSSV, tải tệp tài liệu PDF và kiểm tra kỹ thông tin trước khi nhấn Gửi.</p>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden group hover:border-teal-500 transition">
+                        <div class="text-3xl font-black text-slate-100 group-hover:text-teal-500/20 absolute right-4 top-2 transition">04</div>
+                        <div class="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold text-xl mb-4">
+                            <i class="fa-solid fa-award"></i>
+                        </div>
+                        <h3 class="font-bold text-navy-900 text-lg mb-2">4. Theo Dõi & Nhận HB</h3>
+                        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">Theo dõi tiến độ duyệt hồ sơ, bổ sung minh chứng nếu có yêu cầu và nhận kết quả chính thức.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interactive Checklist & Timeline Grid -->
+            <div class="grid lg:grid-cols-12 gap-8">
+                <!-- Checklist Giấy Tờ (Interactive) -->
+                <div class="lg:col-span-6 bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h3 class="text-xl font-bold text-navy-900">Checklist Hồ Sơ Cần Chuẩn Bị</h3>
+                            <p class="text-xs text-slate-500">Đánh dấu những giấy tờ bạn đã có để kiểm tra độ sẵn sàng</p>
+                        </div>
+                        <span id="checklistProgress" class="text-xs font-bold text-teal-600 bg-teal-50 px-3 py-1 rounded-full border border-teal-200">0/6 Hoàn tất</span>
+                    </div>
+
+                    <div class="space-y-3" id="checklistContainer">
+                        <label class="flex items-start gap-3 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
+                            <input type="checkbox" onchange="updateChecklistProgress()" class="mt-1 w-4 h-4 text-teal-600 rounded focus:ring-teal-500 border-slate-300">
+                            <div>
+                                <span class="font-semibold text-slate-800 text-sm block">Bảng điểm học tập (Có xác nhận của Phòng Đào tạo)</span>
+                                <span class="text-xs text-slate-500">File quét PDF màu rõ nét, bao gồm GPA gần nhất.</span>
+                            </div>
+                        </label>
+
+                        <label class="flex items-start gap-3 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
+                            <input type="checkbox" onchange="updateChecklistProgress()" class="mt-1 w-4 h-4 text-teal-600 rounded focus:ring-teal-500 border-slate-300">
+                            <div>
+                                <span class="font-semibold text-slate-800 text-sm block">Phiếu đánh giá Điểm Rèn Luyện (ĐRL)</span>
+                                <span class="text-xs text-slate-500">Minh chứng xếp loại rèn luyện học kỳ gần nhất.</span>
+                            </div>
+                        </label>
+
+                        <label class="flex items-start gap-3 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
+                            <input type="checkbox" onchange="updateChecklistProgress()" class="mt-1 w-4 h-4 text-teal-600 rounded focus:ring-teal-500 border-slate-300">
+                            <div>
+                                <span class="font-semibold text-slate-800 text-sm block">Giấy xác nhận hoàn cảnh / Sổ hộ nghèo (Nếu có)</span>
+                                <span class="text-xs text-slate-500">Bắt buộc đối với học bổng Hỗ trợ khó khăn / Chính sách.</span>
+                            </div>
+                        </label>
+
+                        <label class="flex items-start gap-3 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
+                            <input type="checkbox" onchange="updateChecklistProgress()" class="mt-1 w-4 h-4 text-teal-600 rounded focus:ring-teal-500 border-slate-300">
+                            <div>
+                                <span class="font-semibold text-slate-800 text-sm block">Minh chứng Hoạt động Ngoại khóa / NCKH</span>
+                                <span class="text-xs text-slate-500">Giấy chứng nhận tham gia CLB, tình nguyện, giải thưởng.</span>
+                            </div>
+                        </label>
+
+                        <label class="flex items-start gap-3 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
+                            <input type="checkbox" onchange="updateChecklistProgress()" class="mt-1 w-4 h-4 text-teal-600 rounded focus:ring-teal-500 border-slate-300">
+                            <div>
+                                <span class="font-semibold text-slate-800 text-sm block">Bài luận cá nhân (Statement of Purpose)</span>
+                                <span class="text-xs text-slate-500">Trình bày nguyện vọng, mục tiêu (khoảng 300-500 từ).</span>
+                            </div>
+                        </label>
+
+                        <label class="flex items-start gap-3 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
+                            <input type="checkbox" onchange="updateChecklistProgress()" class="mt-1 w-4 h-4 text-teal-600 rounded focus:ring-teal-500 border-slate-300">
+                            <div>
+                                <span class="font-semibold text-slate-800 text-sm block">Thư giới thiệu của Giảng viên (Nếu học bổng yêu cầu)</span>
+                                <span class="text-xs text-slate-500">Thư nhận xét từ cố vấn học tập hoặc Trưởng bộ môn.</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Timeline mốc thời gian quan trọng -->
+                <div class="lg:col-span-6 bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm">
+                    <h3 class="text-xl font-bold text-navy-900 mb-6">Mốc Thời Gian Học Kỳ 1 (2026 - 2027)</h3>
+                    
+                    <div class="relative pl-6 border-l-2 border-teal-200 space-y-8">
+                        <div class="relative">
+                            <div class="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-teal-500 border-4 border-white"></div>
+                            <span class="text-xs font-bold text-teal-600 bg-teal-50 px-2 py-0.5 rounded">01/10/2026</span>
+                            <h4 class="font-bold text-navy-900 text-base mt-1">Mở cổng đăng ký học bổng</h4>
+                            <p class="text-xs text-slate-600">Sinh viên bắt đầu nộp hồ sơ trực tuyến qua Cổng thông tin.</p>
+                        </div>
+
+                        <div class="relative">
+                            <div class="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-amber-500 border-4 border-white"></div>
+                            <span class="text-xs font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded">30/10/2026</span>
+                            <h4 class="font-bold text-navy-900 text-base mt-1">Đóng cổng nhận hồ sơ đợt 1</h4>
+                            <p class="text-xs text-slate-600">Hệ thống khóa chức năng nộp đơn để tiến hành phân loại.</p>
+                        </div>
+
+                        <div class="relative">
+                            <div class="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-blue-500 border-4 border-white"></div>
+                            <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded">01/11 - 15/11/2026</span>
+                            <h4 class="font-bold text-navy-900 text-base mt-1">Hội đồng xét duyệt & Phỏng vấn</h4>
+                            <p class="text-xs text-slate-600">Chấm điểm hồ sơ và tổ chức phỏng vấn cho các suất HB doanh nghiệp.</p>
+                        </div>
+
+                        <div class="relative">
+                            <div class="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-emerald-500 border-4 border-white"></div>
+                            <span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">25/11/2026</span>
+                            <h4 class="font-bold text-navy-900 text-base mt-1">Công bố danh sách chính thức & Lễ trao giải</h4>
+                            <p class="text-xs text-slate-600">Đăng tải danh sách nhận HB và tổ chức lễ trao học bổng trực tiếp.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: TRA CỨU KẾT QUẢ & TRẠNG THÁI HỒ SƠ -->
+        <section id="tab-tracking" class="tab-content hidden space-y-10">
+            <!-- Search Box MSSV -->
+            <div class="bg-gradient-to-r from-navy-900 to-teal-800 p-8 rounded-2xl text-white shadow-xl">
+                <div class="max-w-2xl mx-auto text-center">
+                    <h2 class="text-2xl font-bold mb-2">Tra Cứu Tiến Độ Hồ Sơ Cá Nhân</h2>
+                    <p class="text-slate-200 text-sm mb-6">Nhập Mã Số Sinh Viên (MSSV) để xem chính xác trạng thái xử lý hồ sơ học bổng của bạn.</p>
+                    
+                    <form onsubmit="trackMSSV(event)" class="flex flex-col sm:flex-row gap-3">
+                        <input type="text" id="mssvInput" placeholder="Nhập MSSV (Ví dụ: 31231020001)" required class="flex-grow px-4 py-3.5 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-400 font-mono text-base">
+                        <button type="submit" class="px-6 py-3.5 bg-teal-500 hover:bg-teal-600 font-bold rounded-xl transition shadow-lg flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-magnifying-glass"></i> Tra Cứu
+                        </button>
+                    </form>
+                    <p class="text-xs text-teal-200 mt-3">* Gợi ý MSSV kiểm tra mẫu: <span class="underline font-mono cursor-pointer" onclick="fillSampleMSSV('31231020001')">31231020001</span> (Đạt), <span class="underline font-mono cursor-pointer" onclick="fillSampleMSSV('31231020002')">31231020002</span> (Đang duyệt), <span class="underline font-mono cursor-pointer" onclick="fillSampleMSSV('31231020003')">31231020003</span> (Cần bổ sung)</p>
+                </div>
+            </div>
+
+            <!-- Tracking Result Box (Hidden by default) -->
+            <div id="trackingResult" class="hidden bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-md transition-all">
+                <!-- Content will be filled by JS -->
+            </div>
+
+            <!-- Public Result Announcements Table -->
+            <div class="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+                    <div>
+                        <h3 class="text-xl font-bold text-navy-900">Bảng Tin Công Bố Kết Quả Trúng Tuyển</h3>
+                        <p class="text-xs text-slate-500">Danh sách dự kiến & chính thức trúng tuyển học bổng đợt mới nhất</p>
+                    </div>
+                    <input type="text" id="tableSearch" oninput="filterTable()" placeholder="Lọc theo MSSV hoặc Tên..." class="px-3.5 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500">
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm text-slate-600">
+                        <thead class="bg-slate-100 text-slate-700 font-bold uppercase text-xs">
+                            <tr>
+                                <th class="p-3.5 rounded-l-lg">STT</th>
+                                <th class="p-3.5">MSSV</th>
+                                <th class="p-3.5">Họ và Tên</th>
+                                <th class="p-3.5">Lớp / Ngành</th>
+                                <th class="p-3.5">Tên Học Bổng</th>
+                                <th class="p-3.5">Mức Trợ Cấp</th>
+                                <th class="p-3.5 rounded-r-lg">Trạng Thái</th>
+                            </tr>
+                        </thead>
+                        <tbody id="publicResultTable" class="divide-y divide-slate-100">
+                            <!-- Populated via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: TRUNG TÂM GIẢI ĐÁP THẮC MẮC (FAQ) -->
+        <section id="tab-faq" class="tab-content hidden space-y-8">
+            <div class="text-center max-w-2xl mx-auto">
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-navy-900">Trung Tâm Giải Đáp Thắc Mắc (FAQ)</h2>
+                <p class="text-slate-600 mt-2 text-sm">Giải đáp nhanh các câu hỏi thường gặp liên quan đến điều kiện, quy trình và sự cố khi xét học bổng.</p>
+            </div>
+
+            <!-- FAQ Category Tabs -->
+            <div class="flex justify-center gap-2 border-b border-slate-200 pb-3 overflow-x-auto">
+                <button onclick="filterFAQ('all')" class="faq-cat-btn px-4 py-2 rounded-lg text-sm font-semibold text-teal-600 bg-teal-50">Tất cả câu hỏi</button>
+                <button onclick="filterFAQ('dieu-kien')" class="faq-cat-btn px-4 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-100">Về Điều kiện xét chọn</button>
+                <button onclick="filterFAQ('chinh-sach')" class="faq-cat-btn px-4 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-100">Về Chính sách & Nhận tiền</button>
+                <button onclick="filterFAQ('su-co')" class="faq-cat-btn px-4 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-100">Về Xử lý sự cố hồ sơ</button>
+            </div>
+
+            <!-- FAQ Accordion List -->
+            <div class="max-w-4xl mx-auto space-y-4" id="faqList">
+                <!-- FAQ Item 1 -->
+                <div class="faq-item bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm" data-cat="dieu-kien">
+                    <button onclick="toggleAccordion(this)" class="w-full p-5 text-left font-bold text-navy-900 flex justify-between items-center gap-4 hover:bg-slate-50">
+                        <span>Bị nợ môn / học lại có được xét học bổng Khuyến khích học tập không?</span>
+                        <i class="fa-solid fa-chevron-down text-slate-400 transition-transform"></i>
+                    </button>
+                    <div class="faq-answer hidden px-5 pb-5 text-slate-600 text-sm leading-relaxed border-t border-slate-100 pt-3">
+                        Theo quy định chung, sinh viên bị nợ môn hoặc đăng ký học lại trong học kỳ xét học bổng sẽ **không đủ điều kiện** xét Học bổng Khuyến khích học tập. Tuy nhiên, bạn vẫn có thể nộp đơn xét các chương trình **Học bổng Hỗ trợ hoàn cảnh khó khăn** hoặc **Học bổng Doanh nghiệp** nếu đáp ứng các tiêu chí riêng của nhà tài trợ.
+                    </div>
+                </div>
+
+                <!-- FAQ Item 2 -->
+                <div class="faq-item bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm" data-cat="dieu-kien">
+                    <button onclick="toggleAccordion(this)" class="w-full p-5 text-left font-bold text-navy-900 flex justify-between items-center gap-4 hover:bg-slate-50">
+                        <span>Điểm rèn luyện (ĐRL) bao nhiêu thì đủ điều kiện xét học bổng?</span>
+                        <i class="fa-solid fa-chevron-down text-slate-400 transition-transform"></i>
+                    </button>
+                    <div class="faq-answer hidden px-5 pb-5 text-slate-600 text-sm leading-relaxed border-t border-slate-100 pt-3">
+                        Mức Điểm rèn luyện tối thiểu phụ thuộc vào từng loại học bổng:
+                        <ul class="list-disc pl-5 mt-2 space-y-1">
+                            <li><strong>HB Khá:</strong> ĐRL từ 70 điểm trở lên (Loại Khá).</li>
+                            <li><strong>HB Giỏi:</strong> ĐRL từ 80 điểm trở lên (Loại Giỏi).</li>
+                            <li><strong>HB Xuất sắc:</strong> ĐRL từ 90 điểm trở lên (Loại Xuất sắc).</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 3 -->
+                <div class="faq-item bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm" data-cat="chinh-sach">
+                    <button onclick="toggleAccordion(this)" class="w-full p-5 text-left font-bold text-navy-900 flex justify-between items-center gap-4 hover:bg-slate-50">
+                        <span>Sinh viên có được nhận cùng lúc 2 học bổng trong 1 học kỳ không?</span>
+                        <i class="fa-solid fa-chevron-down text-slate-400 transition-transform"></i>
+                    </button>
+                    <div class="faq-answer hidden px-5 pb-5 text-slate-600 text-sm leading-relaxed border-t border-slate-100 pt-3">
+                        Sinh viên **không được nhận đồng thời 02 Học bổng tiền mặt** đến từ ngân sách nhà trường trong cùng 01 học kỳ (Ví dụ: Đã nhận HB Khuyến khích học tập thì không nhận HB Trợ cấp xã hội trường). Tuy nhiên, bạn **vẫn có thể** nhận thêm 01 Học bổng Doanh nghiệp ngoài trường nếu tài trợ đó cho phép kết hợp.
+                    </div>
+                </div>
+
+                <!-- FAQ Item 4 -->
+                <div class="faq-item bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm" data-cat="chinh-sach">
+                    <button onclick="toggleAccordion(this)" class="w-full p-5 text-left font-bold text-navy-900 flex justify-between items-center gap-4 hover:bg-slate-50">
+                        <span>Học bổng trừ trực tiếp vào học phí hay chuyển khoản ngân hàng?</span>
+                        <i class="fa-solid fa-chevron-down text-slate-400 transition-transform"></i>
+                    </button>
+                    <div class="faq-answer hidden px-5 pb-5 text-slate-600 text-sm leading-relaxed border-t border-slate-100 pt-3">
+                        - <strong>HB Khuyến khích học tập:</strong> Hệ thống tự động cấn trừ trực tiếp vào học phí của học kỳ kế tiếp. Trường hợp sinh viên năm cuối, tiền sẽ được chuyển thẳng vào tài khoản ngân hàng liên kết.<br>
+                        - <strong>HB Doanh nghiệp / Hỗ trợ:</strong> Chuyển khoản trực tiếp vào tài khoản ngân hàng chính chủ của sinh viên trong vòng 15 ngày làm việc sau Lễ trao học bổng.
+                    </div>
+                </div>
+
+                <!-- FAQ Item 5 -->
+                <div class="faq-item bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm" data-cat="su-co">
+                    <button onclick="toggleAccordion(this)" class="w-full p-5 text-left font-bold text-navy-900 flex justify-between items-center gap-4 hover:bg-slate-50">
+                        <span>Làm thế nào để sửa thông tin hồ sơ sau khi đã ấn Nộp đơn?</span>
+                        <i class="fa-solid fa-chevron-down text-slate-400 transition-transform"></i>
+                    </button>
+                    <div class="faq-answer hidden px-5 pb-5 text-slate-600 text-sm leading-relaxed border-t border-slate-100 pt-3">
+                        Nếu đơn xét duyệt đang ở trạng thái **"Đã tiếp nhận"** (chưa sang bước Duyệt), bạn có thể vào tab *Tra cứu kết quả*, nhập MSSV và chọn **"Yêu cầu chỉnh sửa"**. Hệ thống sẽ mở lại quyền cập nhật tệp đính kèm cho bạn trong vòng 24 giờ.
+                    </div>
+                </div>
+
+                <!-- FAQ Item 6 -->
+                <div class="faq-item bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm" data-cat="su-co">
+                    <button onclick="toggleAccordion(this)" class="w-full p-5 text-left font-bold text-navy-900 flex justify-between items-center gap-4 hover:bg-slate-50">
+                        <span>Nộp thiếu minh chứng ngoại khóa có bị loại hồ sơ không?</span>
+                        <i class="fa-solid fa-chevron-down text-slate-400 transition-transform"></i>
+                    </button>
+                    <div class="faq-answer hidden px-5 pb-5 text-slate-600 text-sm leading-relaxed border-t border-slate-100 pt-3">
+                        Hồ sơ thiếu minh chứng sẽ chuyển sang trạng thái **"Cần bổ sung"**. Phòng Công tác Sinh viên sẽ gửi email thông báo kèm thời hạn bổ sung (thường là 03-05 ngày). Nếu hết hạn không bổ sung, hồ sơ sẽ bị đánh giá Không đạt.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 5: KÊNH HỖ TRỢ & LIÊN HỆ CTSV -->
+        <section id="tab-contact" class="tab-content hidden space-y-10">
+            <div class="grid lg:grid-cols-12 gap-8">
+                <!-- Info Office Box -->
+                <div class="lg:col-span-5 bg-navy-900 text-white p-8 rounded-2xl shadow-lg flex flex-col justify-between">
+                    <div>
+                        <h2 class="text-2xl font-bold mb-3">Phòng Công Tác Sinh Viên</h2>
+                        <p class="text-slate-300 text-sm mb-8">Bộ phận chuyên trách tiếp nhận, tư vấn và giải quyết mọi thắc mắc về các chương trình học bổng toàn trường.</p>
+
+                        <div class="space-y-6 text-sm">
+                            <div class="flex items-start gap-4">
+                                <div class="w-10 h-10 rounded-lg bg-teal-500/20 text-teal-400 flex items-center justify-center shrink-0">
+                                    <i class="fa-solid fa-location-dot"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-slate-200">Địa chỉ văn phòng</h4>
+                                    <p class="text-slate-400 mt-0.5">Phòng A.102, Tòa nhà Trung tâm, Cơ sở 1</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-4">
+                                <div class="w-10 h-10 rounded-lg bg-teal-500/20 text-teal-400 flex items-center justify-center shrink-0">
+                                    <i class="fa-solid fa-phone"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-slate-200">Điện thoại Hotline</h4>
+                                    <p class="text-slate-400 mt-0.5">(028) 3829 1002 - Ext: 105</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-4">
+                                <div class="w-10 h-10 rounded-lg bg-teal-500/20 text-teal-400 flex items-center justify-center shrink-0">
+                                    <i class="fa-solid fa-envelope"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-slate-200">Email hỗ trợ</h4>
+                                    <p class="text-slate-400 mt-0.5">hocbong@university.edu.vn</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-4">
+                                <div class="w-10 h-10 rounded-lg bg-teal-500/20 text-teal-400 flex items-center justify-center shrink-0">
+                                    <i class="fa-solid fa-clock"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-slate-200">Khung giờ tiếp sinh viên</h4>
+                                    <p class="text-slate-400 mt-0.5">Thứ 2 - Thứ 6: 07:30 - 11:30 | 13:30 - 17:00</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-8 border-t border-slate-800 mt-8">
+                        <p class="text-xs text-slate-400">Cần phản hồi tức thì? Hãy sử dụng hộp thoại Chatbot tự động 24/7 ở góc phải màn hình.</p>
+                    </div>
+                </div>
+
+                <!-- Online Inquiry Form -->
+                <div class="lg:col-span-7 bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
+                    <h3 class="text-xl font-bold text-navy-900 mb-2">Gửi Câu Hỏi Trực Tuyến</h3>
+                    <p class="text-xs text-slate-500 mb-6">Điền thông tin thắc mắc của bạn bên dưới. Cán bộ CTSV sẽ phản hồi qua email trong vòng 24h làm việc.</p>
+
+                    <form onsubmit="handleContactSubmit(event)" class="space-y-4">
+                        <div class="grid sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Mã Số Sinh Viên (MSSV)</label>
+                                <input type="text" required placeholder="3123..." class="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Họ và Tên</label>
+                                <input type="text" required placeholder="Nguyễn Văn A" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500">
+                            </div>
+                        </div>
+
+                        <div class="grid sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Email sinh viên</label>
+                                <input type="email" required placeholder="sv@st.university.edu.vn" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Số điện thoại</label>
+                                <input type="tel" required placeholder="0901234567" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Chủ đề thắc mắc</label>
+                            <select class="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500">
+                                <option>Tư vấn chọn học bổng phù hợp</option>
+                                <option>Sự cố nộp file hồ sơ trực tuyến</option>
+                                <option>Thắc mắc kết quả xét duyệt</option>
+                                <option>Thời gian nhận tiền học bổng</option>
+                                <option>Khác</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Nội dung câu hỏi chi tiết</label>
+                            <textarea rows="4" required placeholder="Mô tả chi tiết câu hỏi hoặc sự cố bạn gặp phải..." class="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"></textarea>
+                        </div>
+
+                        <button type="submit" class="w-full py-3.5 bg-navy-900 hover:bg-navy-800 text-white font-bold rounded-xl transition shadow-md text-sm">
+                            <i class="fa-solid fa-paper-plane mr-2"></i> Gửi Thắc Mắc Đến Phòng CTSV
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- SCHOLARSHIP DETAIL MODAL -->
+    <div id="detailModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-200 animate-fade-in">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-start sticky top-0 bg-white z-10">
+                <div>
+                    <span id="modalBadge" class="text-xs font-bold px-2.5 py-1 rounded-full bg-teal-100 text-teal-700">Loại HB</span>
+                    <h3 id="modalTitle" class="text-xl font-bold text-navy-900 mt-2">Tên Học Bổng</h3>
+                </div>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 p-1">
+                    <i class="fa-solid fa-xmark text-2xl"></i>
+                </button>
+            </div>
+            
+            <div class="p-6 space-y-6 text-sm text-slate-600">
+                <div class="grid grid-cols-2 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <div>
+                        <span class="text-xs text-slate-400 block uppercase">Giá trị mỗi suất</span>
+                        <span id="modalValue" class="text-lg font-extrabold text-teal-600">10,000,000 VNĐ</span>
+                    </div>
+                    <div>
+                        <span class="text-xs text-slate-400 block uppercase">Hạn nộp hồ sơ</span>
+                        <span id="modalDeadline" class="text-lg font-bold text-red-600">30/10/2026</span>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-navy-900 text-base mb-2">1. Điều kiện ứng tuyển bắt buộc</h4>
+                    <ul id="modalRequirements" class="list-disc pl-5 space-y-1.5">
+                        <!-- Populated by JS -->
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-navy-900 text-base mb-2">2. Mô tả & Đơn vị tài trợ</h4>
+                    <p id="modalDesc" class="leading-relaxed">Chi tiết thông tin tài trợ...</p>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-navy-900 text-base mb-2">3. Danh mục hồ sơ đính kèm</h4>
+                    <p class="text-xs text-slate-500 mb-2">Quét tệp dạng PDF dung lượng dưới 10MB cho mỗi tệp:</p>
+                    <div id="modalFiles" class="flex flex-wrap gap-2">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-6 border-t border-slate-100 bg-slate-50 rounded-b-2xl flex flex-col sm:flex-row justify-end gap-3">
+                <button onclick="closeModal()" class="px-5 py-2.5 rounded-xl border border-slate-300 font-semibold text-slate-700 hover:bg-slate-100 transition">
+                    Đóng
+                </button>
+                <button onclick="applyScholarshipFromModal()" class="px-6 py-2.5 rounded-xl bg-teal-500 hover:bg-teal-600 font-bold text-white transition shadow-md">
+                    Ứng Tuyển Trực Tuyến
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- STUDENT LOGIN MODAL -->
+    <div id="loginModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 sm:p-8 shadow-2xl relative">
+            <button onclick="closeLoginModal()" class="absolute right-4 top-4 text-slate-400 hover:text-slate-600">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+            <div class="text-center mb-6">
+                <div class="w-12 h-12 bg-navy-900 text-white rounded-xl flex items-center justify-center mx-auto mb-3 font-bold text-xl">
+                    <i class="fa-solid fa-user-lock"></i>
+                </div>
+                <h3 class="text-xl font-bold text-navy-900">Đăng Nhập Cổng Sinh Viên</h3>
+                <p class="text-xs text-slate-500 mt-1">Sử dụng tài khoản portal trường để xét duyệt học bổng</p>
+            </div>
+
+            <form onsubmit="handleLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Mã Số Sinh Viên (MSSV)</label>
+                    <input type="text" id="loginMssv" required placeholder="Nhập MSSV của bạn" class="w-full p-3 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-teal-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Mật khẩu</label>
+                    <input type="password" required placeholder="••••••••" class="w-full p-3 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-teal-500 focus:outline-none">
+                </div>
+                <button type="submit" class="w-full py-3 bg-teal-500 hover:bg-teal-600 text-white font-bold rounded-xl transition shadow-md">
+                    Đăng Nhập
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- CHATBOT WIDGET -->
+    <div class="fixed bottom-6 right-6 z-40">
+        <!-- Chatbot Button -->
+        <button onclick="toggleChatbot()" id="chatTriggerBtn" class="w-14 h-14 rounded-full bg-gradient-to-tr from-navy-900 to-teal-500 text-white flex items-center justify-center shadow-xl hover:scale-105 transition duration-300 relative">
+            <i class="fa-solid fa-comments text-2xl" id="chatIconOpen"></i>
+            <span class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full border-2 border-white animate-ping"></span>
+            <span class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full border-2 border-white"></span>
+        </button>
+
+        <!-- Chatbot Box -->
+        <div id="chatbotBox" class="hidden absolute bottom-16 right-0 w-80 sm:w-96 bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col h-[480px]">
+            <!-- Header -->
+            <div class="bg-navy-900 text-white p-4 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-teal-500 flex items-center justify-center text-xs font-bold">
+                        AI
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-sm">Trợ Lý HB EduBot 24/7</h4>
+                        <span class="text-[10px] text-teal-300 flex items-center gap-1">
+                            <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full inline-block"></span> Đang trực tuyến
+                        </span>
+                    </div>
+                </div>
+                <button onclick="toggleChatbot()" class="text-slate-300 hover:text-white">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Messages Area -->
+            <div id="chatMessages" class="flex-grow p-4 overflow-y-auto space-y-3 text-xs bg-slate-50">
+                <div class="bg-white p-3 rounded-xl border border-slate-200 max-w-[85%] text-slate-700 shadow-sm">
+                    Xin chào! Tôi là trợ lý AI Cổng Học Bổng. Bạn cần tìm hiểu thông tin gì hôm nay?
+                </div>
+            </div>
+
+            <!-- Quick Suggestions -->
+            <div class="p-2 bg-white border-t border-slate-100 flex gap-1 overflow-x-auto text-[11px]">
+                <button onclick="sendQuickMessage('Điều kiện HB Khuyến khích')" class="px-2.5 py-1 bg-slate-100 hover:bg-teal-50 hover:text-teal-600 rounded-full whitespace-nowrap text-slate-600">
+                    HB Khuyến khích?
+                </button>
+                <button onclick="sendQuickMessage('Hạn nộp hồ sơ bao giờ?')" class="px-2.5 py-1 bg-slate-100 hover:bg-teal-50 hover:text-teal-600 rounded-full whitespace-nowrap text-slate-600">
+                    Hạn nộp đơn?
+                </button>
+                <button onclick="sendQuickMessage('Liên hệ CTSV')" class="px-2.5 py-1 bg-slate-100 hover:bg-teal-50 hover:text-teal-600 rounded-full whitespace-nowrap text-slate-600">
+                    SĐT Hỗ trợ?
+                </button>
+            </div>
+
+            <!-- Input Bar -->
+            <form onsubmit="handleChatSubmit(event)" class="p-2.5 bg-white border-t border-slate-200 flex gap-2">
+                <input type="text" id="chatInput" placeholder="Nhập câu hỏi của bạn..." class="flex-grow px-3 py-2 bg-slate-100 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-teal-500">
+                <button type="submit" class="px-3 py-2 bg-teal-500 text-white font-bold rounded-lg hover:bg-teal-600">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-navy-950 text-slate-400 py-12 border-t border-slate-800 text-xs">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div class="space-y-3">
+                    <div class="flex items-center space-x-2 text-white">
+                        <i class="fa-solid fa-graduation-cap text-teal-400 text-xl"></i>
+                        <span class="text-lg font-bold">EduScholar</span>
+                    </div>
+                    <p class="leading-relaxed">Hệ thống Cổng thông tin Học bổng Sinh viên tập trung. Kết nối cơ hội phát triển tài năng trẻ.</p>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-bold mb-3 uppercase tracking-wider text-xs">Liên Kết Nhanh</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" onclick="switchTab('scholarships')" class="hover:text-teal-400 transition">Học bổng đang mở</a></li>
+                        <li><a href="#" onclick="switchTab('guide')" class="hover:text-teal-400 transition">Quy trình nộp hồ sơ</a></li>
+                        <li><a href="#" onclick="switchTab('tracking')" class="hover:text-teal-400 transition">Tra cứu MSSV</a></li>
+                        <li><a href="#" onclick="switchTab('faq')" class="hover:text-teal-400 transition">Câu hỏi thường gặp</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-bold mb-3 uppercase tracking-wider text-xs">Các Loại Học Bổng</h4>
+                    <ul class="space-y-2">
+                        <li>Khuyến khích học tập (KKHT)</li>
+                        <li>Tài trợ Doanh nghiệp & Đối tác</li>
+                        <li>Hỗ trợ vượt khó & Chính sách</li>
+                        <li>Trao đổi sinh viên quốc tế</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-bold mb-3 uppercase tracking-wider text-xs">Đơn Vị Quản Lý</h4>
+                    <p class="mb-2">Phòng Công tác Sinh viên (CTSV)</p>
+                    <p class="mb-2">Bản quyền © 2026 EduScholar Portal. All rights reserved.</p>
+                </div>
+            </div>
+
+            <div class="pt-8 border-t border-slate-800/80 text-center text-slate-500">
+                <p>Trang web được thiết kế nhằm mục đích phục vụ công tác tra cứu học bổng sinh viên chuyên nghiệp.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT CORE LOGIC -->
+    <script>
+        // --- 1. SCHOLARSHIPS MOCK DATA ---
+        const scholarshipsData = [
+            {
+                id: 1,
+                title: "Học bổng Khuyến khích Học tập HK1 (2026 - 2027)",
+                category: "kkht",
+                categoryLabel: "Khuyến khích học tập",
+                major: "cntt",
+                majorLabel: "Công nghệ thông tin",
+                value: "12,000,000 VNĐ",
+                valueNum: 12000000,
+                deadline: "30/10/2026",
+                gpa: "GPA >= 3.6 / 4.0",
+                drl: "ĐRL >= 90",
+                description: "Dành cho sinh viên có thành tích học tập xuất sắc và điểm rèn luyện tốt trong học kỳ vừa qua. Tiền học bổng cấn trừ trực tiếp học phí.",
+                requirements: [
+                    "GPA tích lũy đạt từ 3.6/4.0 trở lên",
+                    "Điểm rèn luyện học kỳ đạt từ 90 điểm (Xếp loại Xuất sắc)",
+                    "Không bị nợ môn hoặc thi lại trong học kỳ xét thưởng",
+                    "Không vi phạm kỷ luật nhà trường từ mức Khiển trách"
+                ],
+                files: ["Bảng điểm chính thức", "Phiếu ĐRL", "Minh chứng ngoại khóa"]
+            },
+            {
+                id: 2,
+                title: "Quỹ Tài trợ Tài năng Trẻ Tập đoàn Công nghệ VNPT",
+                category: "enterprise",
+                categoryLabel: "Doanh nghiệp & Đối tác",
+                major: "cntt",
+                majorLabel: "CNTT & Điện tử",
+                value: "15,000,000 VNĐ",
+                valueNum: 15000000,
+                deadline: "15/11/2026",
+                gpa: "GPA >= 3.2 / 4.0",
+                drl: "ĐRL >= 80",
+                description: "Quỹ học bổng thường niên hợp tác giữa Nhà trường và Tập đoàn VNPT hỗ trợ các sinh viên CNTT xuất sắc có định hướng phát triển phần mềm.",
+                requirements: [
+                    "Sinh viên năm 3 hoặc năm 4 chuyên ngành CNTT, An toàn thông tin",
+                    "GPA đạt từ 3.2 trở lên",
+                    "Ưu tiên sinh viên đạt giải Olympic tin học hoặc NCKH",
+                    "Cam kết tham gia thực tập tối thiểu 2 tháng tại VNPT"
+                ],
+                files: ["Bảng điểm", "CV Cá nhân", "Giấy chứng nhận giải thưởng", "Bài luận nguyện vọng"]
+            },
+            {
+                id: 3,
+                title: "Học bổng Tiếp sức Đến trường (Vượt khó học giỏi)",
+                category: "support",
+                categoryLabel: "Hỗ trợ / Hoàn cảnh",
+                major: "kinhte",
+                majorLabel: "Tất cả các ngành",
+                value: "8,000,000 VNĐ",
+                valueNum: 8000000,
+                deadline: "20/11/2026",
+                gpa: "GPA >= 2.8 / 4.0",
+                drl: "ĐRL >= 75",
+                description: "Hỗ trợ tài chính kịp thời cho các sinh viên có hoàn cảnh khó khăn, hộ nghèo, cận nghèo hoặc gia đình chịu ảnh hưởng bởi thiên tai.",
+                requirements: [
+                    "Gia đình thuộc diện hộ nghèo, cận nghèo hoặc có xác nhận khó khăn của địa phương",
+                    "GPA học tập đạt từ Khá (2.8 trở lên)",
+                    "Có tinh thần vượt khó, tích cực tham gia các hoạt động cộng đồng"
+                ],
+                files: ["Sổ hộ nghèo / Giấy xác nhận hoàn cảnh", "Bảng điểm", "Đơn trình bày hoàn cảnh"]
+            },
+            {
+                id: 4,
+                title: "Chương trình Trao đổi Sinh viên Quốc tế Sakura (Nhật Bản)",
+                category: "exchange",
+                categoryLabel: "Trao đổi / Du học",
+                major: "ngoainyu",
+                majorLabel: "Tất cả các ngành",
+                value: "25,000,000 VNĐ",
+                valueNum: 25000000,
+                deadline: "05/12/2026",
+                gpa: "GPA >= 3.4 / 4.0",
+                drl: "ĐRL >= 85",
+                description: "Học bổng ngắn hạn 6 tháng học tập giao lưu văn hóa tại Đại học Tokyo, Nhật Bản. Bao gồm vé máy bay và sinh hoạt phí.",
+                requirements: [
+                    "Sinh viên năm 2 hoặc năm 3",
+                    "Tiếng Anh đạt IELTS 6.5+ hoặc Tiếng Nhật N3+",
+                    "GPA >= 3.4",
+                    "Có khả năng giao lưu văn hóa và thể hiện bản lĩnh sinh viên"
+                ],
+                files: ["Chứng chỉ ngoại ngữ", "Bảng điểm tiếng Anh", "Thư giới thiệu của Giảng viên", "Passport scan"]
+            },
+            {
+                id: 5,
+                title: "Học bổng Doanh nghiệp Ngân hàng BIDV - Nâng bước thành công",
+                category: "enterprise",
+                categoryLabel: "Doanh nghiệp & Đối tác",
+                major: "kinhte",
+                majorLabel: "Kinh tế / Ngân hàng",
+                value: "10,000,000 VNĐ",
+                valueNum: 10000000,
+                deadline: "10/11/2026",
+                gpa: "GPA >= 3.0 / 4.0",
+                drl: "ĐRL >= 80",
+                description: "Tài trợ bởi Ngân hàng BIDV dành cho sinh viên ngành Tài chính - Ngân hàng, Kế toán có thành tích học tập và rèn luyện tốt.",
+                requirements: [
+                    "Sinh viên Khối ngành Kinh tế, Ngân hàng",
+                    "GPA từ 3.0/4.0 trở lên",
+                    "Điểm rèn luyện đạt loại Tốt"
+                ],
+                files: ["Bảng điểm", "Minh chứng ĐRL", "Đơn đăng ký theo mẫu BIDV"]
+            },
+            {
+                id: 6,
+                title: "Học bổng Trợ cấp Xã hội & Gia đình Chính sách HK1",
+                category: "support",
+                categoryLabel: "Hỗ trợ / Hoàn cảnh",
+                major: "kythuat",
+                majorLabel: "Tất cả các ngành",
+                value: "4,500,000 VNĐ",
+                valueNum: 4500000,
+                deadline: "25/10/2026",
+                gpa: "GPA >= 2.5 / 4.0",
+                drl: "ĐRL >= 65",
+                description: "Chính sách trợ cấp nhà nước dành cho con thương binh, bệnh binh, sinh viên vùng sâu vùng xa, dân tộc thiểu số.",
+                requirements: [
+                    "Sinh viên thuộc diện chính sách theo quy định hiện hành của Nhà nước",
+                    "Có đầy đủ giấy tờ chứng minh đối tượng chính sách"
+                ],
+                files: ["Giấy xác nhận đối tượng chính sách", "Căn cước công dân scan"]
+            }
+        ];
+
+        // --- 2. PUBLIC RESULT TABLE MOCK DATA ---
+        const publicResultsData = [
+            { stt: 1, mssv: "31231020001", name: "Nguyễn Văn An", class: "CNTT K47", scholarship: "HB Khuyến khích HK1", amount: "12,000,000 VNĐ", status: "Đạt (Đã chuyển khoản)", statusBg: "bg-emerald-100 text-emerald-700" },
+            { stt: 2, mssv: "31231020002", name: "Trần Thị Mai", class: "MKT K48", scholarship: "HB Doanh nghiệp BIDV", amount: "10,000,000 VNĐ", status: "Đang xét duyệt", statusBg: "bg-amber-100 text-amber-700" },
+            { stt: 3, mssv: "31231020003", name: "Lê Hoàng Nam", class: "QTKD K47", scholarship: "HB Tiếp sức Đến trường", amount: "8,000,000 VNĐ", status: "Cần bổ sung file", statusBg: "bg-red-100 text-red-700" },
+            { stt: 4, mssv: "31231020004", name: "Phạm Minh Tuấn", class: "KTSR K46", scholarship: "HB VNPT Tài năng Trẻ", amount: "15,000,000 VNĐ", status: "Đạt (Đã chuyển khoản)", statusBg: "bg-emerald-100 text-emerald-700" },
+            { stt: 5, mssv: "31231020005", name: "Đặng Thu Thảo", class: "NNA K48", scholarship: "HB Trao đổi Sakura", amount: "25,000,000 VNĐ", status: "Chờ phỏng vấn", statusBg: "bg-blue-100 text-blue-700" }
+        ];
+
+        // --- 3. TAB SWITCHING LOGIC ---
+        function switchTab(tabId) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.add('hidden');
+                tab.classList.remove('block');
+            });
+            // Show active tab
+            const targetTab = document.getElementById(`tab-${tabId}`);
+            if (targetTab) {
+                targetTab.classList.remove('hidden');
+                targetTab.classList.add('block');
+            }
+
+            // Update Nav button styles
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-teal-600', 'bg-teal-50');
+                btn.classList.add('text-slate-600');
+            });
+            const activeBtn = document.getElementById(`nav-${tabId}`);
+            if (activeBtn) {
+                activeBtn.classList.add('text-teal-600', 'bg-teal-50');
+                activeBtn.classList.remove('text-slate-600');
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        // --- 4. RENDER & FILTER SCHOLARSHIPS ---
+        function renderScholarships(items) {
+            const grid = document.getElementById('scholarshipsGrid');
+            const empty = document.getElementById('emptyScholarship');
+            const count = document.getElementById('scholarshipCount');
+
+            count.innerText = items.length;
+
+            if (items.length === 0) {
+                grid.innerHTML = '';
+                empty.classList.remove('hidden');
+                return;
+            }
+
+            empty.classList.add('hidden');
+            grid.innerHTML = items.map(item => `
+                <div class="bg-white rounded-2xl border border-slate-200 hover:border-teal-400 hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden group">
+                    <div class="p-6">
+                        <div class="flex items-center justify-between gap-2 mb-3">
+                            <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-teal-50 text-teal-600 border border-teal-200">
+                                ${item.categoryLabel}
+                            </span>
+                            <span class="text-xs text-slate-400 font-medium">
+                                <i class="fa-regular fa-clock mr-1"></i> ${item.deadline}
+                            </span>
+                        </div>
+                        <h3 class="font-bold text-navy-900 text-lg group-hover:text-teal-600 transition mb-2 leading-snug">
+                            ${item.title}
+                        </h3>
+                        <p class="text-xs text-slate-500 line-clamp-2 mb-4 leading-relaxed">
+                            ${item.description}
+                        </p>
+
+                        <div class="grid grid-cols-2 gap-2 bg-slate-50 p-3 rounded-xl border border-slate-100 text-xs mb-4">
+                            <div>
+                                <span class="text-slate-400 block">Điều kiện GPA</span>
+                                <span class="font-semibold text-slate-700">${item.gpa}</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-400 block">Điểm Rèn Luyện</span>
+                                <span class="font-semibold text-slate-700">${item.drl}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="px-6 py-4 bg-slate-50/80 border-t border-slate-100 flex items-center justify-between">
+                        <div>
+                            <span class="text-[10px] text-slate-400 uppercase font-bold block">Giá trị suất</span>
+                            <span class="text-base font-extrabold text-teal-600">${item.value}</span>
+                        </div>
+                        <button onclick="openModal(${item.id})" class="px-4 py-2 bg-navy-900 hover:bg-teal-600 text-white font-bold rounded-lg text-xs transition shadow-sm">
+                            Xem Chi Tiết
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterScholarships() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const category = document.getElementById('filterCategory').value;
+            const major = document.getElementById('filterMajor').value;
+            const valRange = document.getElementById('filterValue').value;
+
+            const filtered = scholarshipsData.filter(item => {
+                const matchSearch = item.title.toLowerCase().includes(search) || item.description.toLowerCase().includes(search);
+                const matchCat = (category === 'all') || (item.category === category);
+                const matchMajor = (major === 'all') || (item.major === major) || (item.major === 'all');
+                
+                let matchVal = true;
+                if (valRange === 'high') matchVal = item.valueNum > 10000000;
+                else if (valRange === 'medium') matchVal = item.valueNum >= 5000000 && item.valueNum <= 10000000;
+                else if (valRange === 'low') matchVal = item.valueNum < 5000000;
+
+                return matchSearch && matchCat && matchMajor && matchVal;
+            });
+
+            renderScholarships(filtered);
+        }
+
+        function resetFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('filterCategory').value = 'all';
+            document.getElementById('filterMajor').value = 'all';
+            document.getElementById('filterValue').value = 'all';
+            renderScholarships(scholarshipsData);
+        }
+
+        // --- 5. MODAL DETAIL LOGIC ---
+        let currentModalScholarship = null;
+
+        function openModal(id) {
+            const item = scholarshipsData.find(s => s.id === id);
+            if (!item) return;
+            currentModalScholarship = item;
+
+            document.getElementById('modalTitle').innerText = item.title;
+            document.getElementById('modalBadge').innerText = item.categoryLabel;
+            document.getElementById('modalValue').innerText = item.value;
+            document.getElementById('modalDeadline').innerText = item.deadline;
+            document.getElementById('modalDesc').innerText = item.description;
+
+            document.getElementById('modalRequirements').innerHTML = item.requirements.map(r => `<li>${r}</li>`).join('');
+            document.getElementById('modalFiles').innerHTML = item.files.map(f => `<span class="px-2.5 py-1 bg-slate-100 text-slate-700 text-xs rounded-md border border-slate-200"><i class="fa-regular fa-file-pdf text-red-500 mr-1"></i>${f}</span>`).join('');
+
+            document.getElementById('detailModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('detailModal').classList.add('hidden');
+        }
+
+        function applyScholarshipFromModal() {
+            closeModal();
+            openLoginModal();
+        }
+
+        // --- 6. CHECKLIST INTERACTIVE PROGRESS ---
+        function updateChecklistProgress() {
+            const checkboxes = document.querySelectorAll('#checklistContainer input[type="checkbox"]');
+            let checkedCount = 0;
+            checkboxes.forEach(cb => { if(cb.checked) checkedCount++; });
+            
+            const progressSpan = document.getElementById('checklistProgress');
+            progressSpan.innerText = `${checkedCount}/${checkboxes.length} Hoàn tất`;
+            if (checkedCount === checkboxes.length) {
+                progressSpan.className = "text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200";
+            } else {
+                progressSpan.className = "text-xs font-bold text-teal-600 bg-teal-50 px-3 py-1 rounded-full border border-teal-200";
+            }
+        }
+
+        // --- 7. MSSV TRACKING LOGIC ---
+        function fillSampleMSSV(mssv) {
+            document.getElementById('mssvInput').value = mssv;
+        }
+
+        function trackMSSV(e) {
+            e.preventDefault();
+            const mssv = document.getElementById('mssvInput').value.trim();
+            const resultBox = document.getElementById('trackingResult');
+
+            resultBox.classList.remove('hidden');
+
+            if (mssv === '31231020001') {
+                resultBox.innerHTML = `
+                    <div class="border-l-4 border-emerald-500 pl-4">
+                        <span class="text-xs font-bold text-emerald-600 uppercase tracking-widest">Kết quả tìm kiếm MSSV: ${mssv}</span>
+                        <h3 class="text-xl font-bold text-navy-900 mt-1">Sinh viên: Nguyễn Văn An - Lớp CNTT K47</h3>
+                        <p class="text-sm text-slate-600 mt-1">Đơn đăng ký: <strong>Học bổng Khuyến khích học tập HK1</strong></p>
+                    </div>
+                    <div class="mt-8">
+                        <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Tiến độ xét duyệt hồ sơ</h4>
+                        <div class="grid grid-cols-4 gap-2 text-center text-xs">
+                            <div class="p-3 bg-emerald-50 text-emerald-700 rounded-xl font-bold border border-emerald-200">1. Tiếp nhận <i class="fa-solid fa-check text-xs"></i></div>
+                            <div class="p-3 bg-emerald-50 text-emerald-700 rounded-xl font-bold border border-emerald-200">2. Đang duyệt <i class="fa-solid fa-check text-xs"></i></div>
+                            <div class="p-3 bg-emerald-50 text-emerald-700 rounded-xl font-bold border border-emerald-200">3. Đánh giá <i class="fa-solid fa-check text-xs"></i></div>
+                            <div class="p-3 bg-emerald-500 text-white rounded-xl font-bold shadow-sm">4. ĐẠT HỌC BỔNG</div>
+                        </div>
+                    </div>
+                `;
+            } else if (mssv === '31231020002') {
+                resultBox.innerHTML = `
+                    <div class="border-l-4 border-amber-500 pl-4">
+                        <span class="text-xs font-bold text-amber-600 uppercase tracking-widest">Kết quả tìm kiếm MSSV: ${mssv}</span>
+                        <h3 class="text-xl font-bold text-navy-900 mt-1">Sinh viên: Trần Thị Mai - Lớp MKT K48</h3>
+                        <p class="text-sm text-slate-600 mt-1">Đơn đăng ký: <strong>Học bổng Doanh nghiệp BIDV</strong></p>
+                    </div>
+                    <div class="mt-8">
+                        <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Tiến độ xét duyệt hồ sơ</h4>
+                        <div class="grid grid-cols-4 gap-2 text-center text-xs">
+                            <div class="p-3 bg-emerald-50 text-emerald-700 rounded-xl font-bold border border-emerald-200">1. Tiếp nhận <i class="fa-solid fa-check"></i></div>
+                            <div class="p-3 bg-amber-500 text-white rounded-xl font-bold shadow-sm">2. Đang xét duyệt</div>
+                            <div class="p-3 bg-slate-100 text-slate-400 rounded-xl">3. Phỏng vấn</div>
+                            <div class="p-3 bg-slate-100 text-slate-400 rounded-xl">4. Kết quả</div>
+                        </div>
+                    </div>
+                `;
+            } else if (mssv === '31231020003') {
+                resultBox.innerHTML = `
+                    <div class="border-l-4 border-red-500 pl-4">
+                        <span class="text-xs font-bold text-red-600 uppercase tracking-widest">Kết quả tìm kiếm MSSV: ${mssv}</span>
+                        <h3 class="text-xl font-bold text-navy-900 mt-1">Sinh viên: Lê Hoàng Nam - Lớp QTKD K47</h3>
+                        <p class="text-sm text-slate-600 mt-1">Đơn đăng ký: <strong>Học bổng Tiếp sức Đến trường</strong></p>
+                    </div>
+                    <div class="mt-6 bg-red-50 p-4 rounded-xl border border-red-200 text-xs text-red-700">
+                        <p class="font-bold mb-1"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Yêu cầu bổ sung hồ sơ khẩn cấp:</p>
+                        <p>Hồ sơ của bạn hiện đang thiếu "Giấy xác nhận hộ nghèo / hoàn cảnh khó khăn có công chứng". Vui lòng bổ sung trước 17h00 ngày 28/10/2026.</p>
+                        <button onclick="alert('Tính năng tải bổ sung file đang sẵn sàng!')" class="mt-3 px-4 py-2 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition">Bổ Sống File Ngay</button>
+                    </div>
+                `;
+            } else {
+                resultBox.innerHTML = `
+                    <div class="text-center py-6 text-slate-500">
+                        <i class="fa-solid fa-circle-xmark text-4xl text-slate-300 mb-2"></i>
+                        <p class="font-bold text-slate-700">Không tìm thấy thông tin cho MSSV: ${mssv}</p>
+                        <p class="text-xs mt-1">Vui lòng kiểm tra lại MSSV hoặc bạn chưa gửi đơn nộp học bổng trực tuyến.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // --- 8. PUBLIC RESULTS TABLE SEARCH ---
+        function renderPublicResults(data) {
+            const tbody = document.getElementById('publicResultTable');
+            tbody.innerHTML = data.map(item => `
+                <tr class="hover:bg-slate-50 transition">
+                    <td class="p-3.5 font-bold text-slate-400">${item.stt}</td>
+                    <td class="p-3.5 font-mono font-bold text-navy-900">${item.mssv}</td>
+                    <td class="p-3.5 font-semibold text-slate-800">${item.name}</td>
+                    <td class="p-3.5">${item.class}</td>
+                    <td class="p-3.5">${item.scholarship}</td>
+                    <td class="p-3.5 font-bold text-teal-600">${item.amount}</td>
+                    <td class="p-3.5">
+                        <span class="px-2.5 py-1 rounded-full text-xs font-bold ${item.statusBg}">${item.status}</span>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function filterTable() {
+            const query = document.getElementById('tableSearch').value.toLowerCase();
+            const filtered = publicResultsData.filter(item => 
+                item.mssv.toLowerCase().includes(query) || item.name.toLowerCase().includes(query)
+            );
+            renderPublicResults(filtered);
+        }
+
+        // --- 9. FAQ ACCORDION LOGIC ---
+        function toggleAccordion(btn) {
+            const answer = btn.nextElementSibling;
+            const icon = btn.querySelector('.fa-chevron-down');
+
+            if (answer.classList.contains('hidden')) {
+                answer.classList.remove('hidden');
+                icon.style.transform = 'rotate(180deg)';
+            } else {
+                answer.classList.add('hidden');
+                icon.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        function filterFAQ(category) {
+            document.querySelectorAll('.faq-cat-btn').forEach(btn => {
+                btn.classList.remove('text-teal-600', 'bg-teal-50');
+                btn.classList.add('text-slate-600');
+            });
+            event.target.classList.add('text-teal-600', 'bg-teal-50');
+
+            document.querySelectorAll('.faq-item').forEach(item => {
+                if (category === 'all' || item.dataset.cat === category) {
+                    item.classList.remove('hidden');
+                } else {
+                    item.classList.add('hidden');
+                }
+            });
+        }
+
+        // --- 10. AUTH & LOGIN MODAL ---
+        function openLoginModal() {
+            document.getElementById('loginModal').classList.remove('hidden');
+        }
+
+        function closeLoginModal() {
+            document.getElementById('loginModal').classList.add('hidden');
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const mssv = document.getElementById('loginMssv').value;
+            closeLoginModal();
+            
+            // Temporary Success Box
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-5 right-5 z-50 bg-emerald-600 text-white px-6 py-3 rounded-xl shadow-2xl font-bold text-sm flex items-center gap-2 animate-bounce';
+            notification.innerHTML = `<i class="fa-solid fa-circle-check text-lg"></i> Đăng nhập MSSV ${mssv} thành công!`;
+            document.body.appendChild(notification);
+
+            setTimeout(() => notification.remove(), 4000);
+        }
+
+        function handleContactSubmit(e) {
+            e.preventDefault();
+            alert("Câu hỏi của bạn đã được gửi thành công đến Phòng Công tác Sinh viên!");
+            e.target.reset();
+        }
+
+        // --- 11. CHATBOT LOGIC ---
+        function toggleChatbot() {
+            const box = document.getElementById('chatbotBox');
+            box.classList.toggle('hidden');
+        }
+
+        function sendQuickMessage(msg) {
+            document.getElementById('chatInput').value = msg;
+            handleChatSubmit(new Event('submit'));
+        }
+
+        function handleChatSubmit(e) {
+            e.preventDefault();
+            const input = document.getElementById('chatInput');
+            const query = input.value.trim();
+            if (!query) return;
+
+            const messagesDiv = document.getElementById('chatMessages');
+
+            // User Message
+            const userMsgHtml = `
+                <div class="bg-teal-500 text-white p-3 rounded-xl max-w-[85%] ml-auto text-xs font-medium shadow-sm">
+                    ${query}
+                </div>
+            `;
+            messagesDiv.insertAdjacentHTML('beforeend', userMsgHtml);
+            input.value = '';
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+            // Generate AI Bot Reply
+            setTimeout(() => {
+                let botReply = "Cảm ơn bạn đã đặt câu hỏi. Bộ phận hỗ trợ CTSV sẽ sớm cập nhật câu trả lời chi tiết cho thắc mắc của bạn.";
+                const lower = query.toLowerCase();
+
+                if (lower.includes('điều kiện') || lower.includes('khuyến khích')) {
+                    botReply = "Học bổng Khuyến khích học tập yêu cầu GPA tối thiểu từ 3.2 (Khá), 3.6 (Xuất sắc) và Điểm rèn luyện từ 80 trở lên trong học kỳ xét thưởng.";
+                } else if (lower.includes('hạn') || lower.includes('bao giờ')) {
+                    botReply = "Hạn nộp hồ sơ Học bổng Khuyến khích HK1 đợt này là ngày 30/10/2026. Bạn vui lòng hoàn tất checklist hồ sơ trước ngày này nhé!";
+                } else if (lower.includes('sđt') || lower.includes('liên hệ')) {
+                    botReply = "Bạn có thể gọi Hotline Phòng CTSV qua số (028) 3829 1002 (Ext: 105) hoặc gửi email đến hocbong@university.edu.vn.";
+                }
+
+                const botMsgHtml = `
+                    <div class="bg-white p-3 rounded-xl border border-slate-200 max-w-[85%] text-slate-700 shadow-sm leading-relaxed">
+                        ${botReply}
+                    </div>
+                `;
+                messagesDiv.insertAdjacentHTML('beforeend', botMsgHtml);
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            }, 600);
+        }
+
+        // --- 12. INITIALIZATION ON LOAD ---
+        window.onload = function() {
+            renderScholarships(scholarshipsData);
+            renderPublicResults(publicResultsData);
+        };
+    </script>
+</body>
+</html>
